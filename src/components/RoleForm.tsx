@@ -1,16 +1,15 @@
 import React from "react";
 import * as yup from "yup";
 import TextField from "@mui/material/TextField";
-import { Button, InputLabel, MenuItem, Select } from "@mui/material";
 import Box from "@mui/material/Box";
-import { useRolesContext } from '@/hooks/useRolesContext';
-import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import { FormLabel } from "@mui/material";
+import { Button, InputLabel, MenuItem, Select } from "@mui/material";
 import { makeStyles } from "@material-ui/core";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { UserDataContext } from '../context/SelectedUserContext';
+import { useRolesContext } from '@/hooks/useRolesContext';
+
+
 type RoleType = {
     id: number;
     title: string;
@@ -64,12 +63,10 @@ const UseStyles = makeStyles({
     },
 });
 const RoleForm = () => {
+
     const classes = UseStyles();
-    // const { selectedUser } = React.useContext(UserDataContext);
-    // const isAddMode = !selectedUser.id;
     const { dispatch } = useRolesContext()
     const [isPending, setPending] = React.useState<boolean>(false);
-    // console.log(isAddMode);
 
     const validationSchema = yup.object().shape({
         title: yup
@@ -87,7 +84,7 @@ const RoleForm = () => {
 
     });
 
-    const { register, handleSubmit, reset, setValue, getValues, formState } =
+    const { register, handleSubmit, reset, formState } =
         useForm<RoleType>({
             resolver: yupResolver(validationSchema),
         });
@@ -95,40 +92,6 @@ const RoleForm = () => {
     function onSubmit(data: RoleType) {
         return createRole(data);
     }
-    const update = () => {
-        fetch("  http://localhost:8000/roles").then((result) => {
-            result.json().then((resp) => {
-                dispatch({ type: 'SET_ROLES', payload: resp })
-            });
-        });
-    };
-    // const updateUser = (
-    //     id: number | string,
-    //     userData: RoleType
-    // ) => {
-    //     fetch(`http://localhost:8000/roles/` + id, {
-    //         method: "PUT",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //         },
-    //         body: JSON.stringify(userData),
-    //     })
-    //         .then((res) => {
-    //             return res.json();
-    //         })
-    //         .then(() => {
-    //             dispatch({
-    //                 type: "UPDATE_USER",
-    //                 payload: {
-    //                     id,
-    //                     userData
-    //                 }
-    //             }
-    //             );
-
-    //             update();
-    //         });
-    // };
 
     const createRole = (data: RoleType) => {
         setPending(true);
@@ -138,7 +101,7 @@ const RoleForm = () => {
             body: JSON.stringify(data),
         })
             .then((res) => {
-                console.log("response");
+
                 setPending(false);
                 return res.json();
             })
@@ -148,28 +111,12 @@ const RoleForm = () => {
 
             });
     };
-    // React.useEffect(() => {
-    //     if (!isAddMode) {
-    //         // get user and set form fields
-    //         fetch(`http://localhost:8000/roles/` + selectedUser.id)
-    //             .then((res) => {
-    //                 return res.json();
-    //             })
-    //             .then((data) => {
-    //                 const fields: Array<
-    //                     "title" | "description" | "active"
-    //                 > = ["title", "description", "active"];
-    //                 fields.forEach((field) => setValue(field, data[field]));
-    //                 // setStudents(data);
-    //             });
-    //     }
-    // }, [isAddMode, selectedUser.id, setValue]);
-    // console.log("getValues", getValues());
+
     return (
         <Box className={classes.create}>
             <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
                 <FormControl>
-                    {/* <h1>{isAddMode ? "Add Student" : "Edit Student"}</h1> */}
+
                     <Box className={classes.textname}>
                         <TextField
                             fullWidth
@@ -179,7 +126,6 @@ const RoleForm = () => {
                             variant="outlined"
                             id="title"
                             {...register("title")}
-                        // defaultValue={!isAddMode ? { getValues } : ""}
                         />
                         <Box className={classes.invalidFeedback}>
                             {errors.title?.message}
@@ -195,7 +141,6 @@ const RoleForm = () => {
                             className={classes.text}
                             id="description"
                             {...register("description")}
-                        // defaultValue={!isAddMode ? { getValues } : ""}
                         />
                         <Box className={classes.invalidFeedback}>
                             {errors.description?.message}
@@ -209,7 +154,6 @@ const RoleForm = () => {
                                 id="active"
 
                                 {...register("active")}
-                            // defaultValue={!isAddMode ? { getValues } : ""}
                             >
                                 <MenuItem value={"yes"} style={{ display: "flex", flexDirection: "column" }}>Yes</MenuItem>
                                 <MenuItem value={"no"} style={{ display: "flex", flexDirection: "column" }}>No</MenuItem>
@@ -220,20 +164,6 @@ const RoleForm = () => {
                             {errors.active?.message}
                         </Box>
                     </Box>
-                    {/* <Box className={classes.textname}>
-                        <TextField
-                            label="Phone no."
-                            type="text"
-                            placeholder="Enter the number"
-                            className={classes.text}
-                            id="phone"
-                            {...register("phone")}
-                            defaultValue={!isAddMode ? { getValues } : ""}
-                        />
-                        <Box className={classes.invalidFeedback}>
-                            {errors.active?.message}
-                        </Box>
-                    </Box> */}
 
                     <Box className={classes.btn}>
                         <Box style={{ flexGrow: 1 }}>
@@ -244,7 +174,7 @@ const RoleForm = () => {
                                 type="submit"
 
                             >
-                                {/* {isAddMode ? "Submit" : "Save"} */} Submit
+                                Submit
                             </Button>
                         </Box>
                         <Box>

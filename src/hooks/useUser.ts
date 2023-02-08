@@ -1,4 +1,5 @@
 import React from 'react';
+
 type UserType = {
     id: number,
     email: string,
@@ -28,7 +29,7 @@ const useUser = () => {
                 })
                 .catch(err => {
                     if (err.name === 'AbortError') {
-                        console.log('fetch aborted')
+
                     } else {
                         // auto catches network / connection error
                         setIsPending(false);

@@ -1,10 +1,11 @@
 import React from 'react'
-import { Box, Button, Paper } from '@material-ui/core'
-import { HiUserGroup, HiClipboard } from 'react-icons/hi';
-import { makeStyles } from '@mui/styles';
 import Container from '@mui/system/Container';
 import FormRoleDialog from './FormRoleDialog';
 import FormUserDialog from './FormUserDialog';
+import { Box, Button, Paper } from '@material-ui/core'
+import { HiUserGroup, HiClipboard } from 'react-icons/hi';
+import { makeStyles } from '@mui/styles';
+
 type Props = {
     selectedButton: "manageUser" | "manageRole";
     setSelectedButton: React.Dispatch<React.SetStateAction<"manageUser" | "manageRole">>
@@ -19,9 +20,9 @@ const useStyles = makeStyles({
     },
     cont: {
         height: "100vh",
-        // maxWidth: "120px"
     }
 })
+
 const SideBar = ({ selectedButton, setSelectedButton }: Props) => {
     const classes = useStyles()
     return (

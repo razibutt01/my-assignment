@@ -1,16 +1,15 @@
 import React from "react";
 import * as yup from "yup";
 import TextField from "@mui/material/TextField";
-import { Button } from "@mui/material";
 import Box from "@mui/material/Box";
-import { useUsersContext } from '@/hooks/useUsersContext';
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import { FormLabel } from "@mui/material";
 import { makeStyles } from "@material-ui/core";
+import { Button } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useUsersContext } from '@/hooks/useUsersContext';
 import { UserDataContext } from '../context/SelectedUserContext';
+
+
 type UserType = {
     id: number,
     email: string,
@@ -20,7 +19,7 @@ type UserType = {
 }
 const UseStyles = makeStyles({
     create: {
-        // margin: "10px ",
+
         width: "100% ",
         padding: "0",
 
@@ -66,13 +65,14 @@ const UseStyles = makeStyles({
         marginTop: "0",
     },
 });
+
 const Create = () => {
     const classes = UseStyles();
     const { selectedUser } = React.useContext(UserDataContext);
     const isAddMode = !selectedUser.id;
     const { dispatch } = useUsersContext()
     const [isPending, setPending] = React.useState<boolean>(false);
-    console.log(isAddMode);
+
 
     const validationSchema = yup.object().shape({
         firstName: yup
@@ -142,7 +142,7 @@ const Create = () => {
             body: JSON.stringify(data),
         })
             .then((res) => {
-                console.log("response");
+
                 setPending(false);
                 return res.json();
             })
@@ -150,12 +150,12 @@ const Create = () => {
             .then((data) => {
                 dispatch({ type: 'CREATE_USERS', payload: data })
 
-                console.log("new student added");
+
             });
     };
     React.useEffect(() => {
         if (!isAddMode) {
-            // get user and set form fields
+
             fetch(`http://localhost:8000/users/` + selectedUser.id)
                 .then((res) => {
                     return res.json();
@@ -165,16 +165,15 @@ const Create = () => {
                         "firstName" | "lastName" | "email" | "phone"
                     > = ["firstName", "lastName", "email", "phone"];
                     fields.forEach((field) => setValue(field, data[field]));
-                    // setStudents(data);
+
                 });
         }
     }, [isAddMode, selectedUser.id, setValue]);
-    console.log("getValues", getValues());
+
     return (
         <Box className={!isAddMode ? classes.create2 : classes.create}>
             <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
-                {/* <FormControl> */}
-                {/* <h1>{isAddMode ? "Add Student" : "Edit Student"}</h1> */}
+
                 <Box className={classes.textname}>
                     <TextField
                         fullWidth
@@ -182,8 +181,7 @@ const Create = () => {
                         type="text"
                         placeholder="Enter the First Name"
                         variant="outlined"
-                        // className={classes.textname}
-                        // className={`form-control ${errors.name ? "is-invalid" : ""}`}
+
                         id="firstName"
                         {...register("firstName")}
                         defaultValue={!isAddMode ? { getValues } : ""}
@@ -198,7 +196,6 @@ const Create = () => {
                         label="Last Name"
                         type="text"
                         placeholder="Enter the Last Name"
-                        // className={classes.text}
                         id="lastName"
                         {...register("lastName")}
                         defaultValue={!isAddMode ? { getValues } : ""}
@@ -213,7 +210,6 @@ const Create = () => {
                         label="Email"
                         type="email"
                         placeholder="Enter the Email"
-                        // className={classes.text}
                         id="email"
                         {...register("email")}
                         defaultValue={!isAddMode ? { getValues } : ""}
@@ -228,7 +224,6 @@ const Create = () => {
                         label="Phone no."
                         type="text"
                         placeholder="Enter the number"
-                        // className={classes.text}
                         id="phone"
                         {...register("phone")}
                         defaultValue={!isAddMode ? { getValues } : ""}
@@ -245,7 +240,6 @@ const Create = () => {
                             color="primary"
                             size="small"
                             type="submit"
-
                         >
                             {isAddMode ? "Submit" : "Save"}
                         </Button>
@@ -263,7 +257,6 @@ const Create = () => {
                     </Box>
 
                 </Box>
-                {/* </FormControl> */}
             </form>
         </Box>
     );

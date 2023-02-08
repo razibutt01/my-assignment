@@ -1,15 +1,15 @@
 import React from 'react'
-import useUser from '@/hooks/useUser';
-import { useUsersContext } from '@/hooks/useUsersContext';
-import { UserDataContext } from '../context/SelectedUserContext';
-import { DataGrid, GridRowParams, GridRowsProp, GridEditCellProps } from '@mui/x-data-grid';
 import DeleteIcon from '@material-ui/icons/Delete';
-
+import { DataGrid, GridRowsProp, GridEditCellProps } from '@mui/x-data-grid';
 import { Box, Paper } from '@material-ui/core';
 import { Typography, Button, IconButton } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import useUser from '@/hooks/useUser';
+import { useUsersContext } from '@/hooks/useUsersContext';
+import { UserDataContext } from '../context/SelectedUserContext';
 
-type Props = {}
+
+
 const useStyles = makeStyles({
     head: {
         height: "100%", width: "100%",
@@ -33,13 +33,6 @@ const useStyles = makeStyles({
 
     }
 })
-type UserType = {
-    id: number,
-    email: string,
-    firstName: string,
-    lastName: string,
-    phone: string
-}
 const UserNameCell = (props: GridEditCellProps) => {
     const { setSelectedUser } = React.useContext(UserDataContext);
 
@@ -60,19 +53,9 @@ const UserNameCell = (props: GridEditCellProps) => {
     );
 };
 
-const LeftUserCard = (props: Props) => {
-    // const { setSelectedUser } = React.useContext(UserDataContext);
+const LeftUserCard = () => {
     const { state, dispatch } = useUsersContext()
     const { data, isPending, error } = useUser()
-    // function handleRowClick(rowData: GridRowParams<any>) {
-    //     fetch("http://localhost:8000/users/" + rowData.row.id, {
-    //         method: "GET",
-    //         headers: {
-    //             'Accept': 'application/json',
-    //         },
-    //     }).then(res => res.json())
-    //         .then(data => setSelectedUser(data))
-    // }
     function handleDelete(id: any) {
         fetch("http://localhost:8000/users" + "/" + id, {
             method: 'DELETE'

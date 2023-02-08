@@ -1,11 +1,12 @@
 import React from 'react';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import { AppProps } from 'next/app';
+import NavBar from '@/components/NavBar';
 import { UsersContextProvider } from '../context/UsersContext'
 import { RolesContextProvider } from '../context/RolesContext'
-import CssBaseline from '@material-ui/core/CssBaseline';
-import NavBar from '@/components/NavBar';
 import { UserDataContext } from '@/context/SelectedUserContext';
 import { RoleDataContext } from '@/context/SelectedRoleContext';
+
 type UserType = {
   id: number,
   email: string,

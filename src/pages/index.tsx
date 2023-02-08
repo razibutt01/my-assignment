@@ -1,14 +1,12 @@
 import React from "react"
-import { Box } from '@material-ui/core'
+import Grid from '@mui/material/Grid';
+import Head from 'next/head'
 import LeftUserCard from "@/components/LeftUserCard";
 import RightUserCard from '@/components/RightUserCard';
 import SideBar from '@/components/SideBar'
-import Head from 'next/head'
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
 import LeftRoleCard from '@/components/LeftRoleCard';
 import RightRoleCard from "@/components/RightRoleCard";
-import NavBar from "@/components/NavBar";
+
 
 export default function Home() {
   const title = 'SelectCare | Senior > Admin';
@@ -35,20 +33,6 @@ export default function Home() {
         </Grid>
 
       </Grid>
-      {/* <Box
-        style={{ display: "flex" }}
-      >
-        <Box>
-          <SideBar selectedButton={selectedButton} setSelectedButton={setSelectedButton} />
-        </Box>
-        <Box>
-          {selectedButton === "manageUser" ? <LeftUserCard /> : <LeftRoleCard />}
-
-        </Box>
-        <Box>
-          {selectedButton === "manageUser" ? <RightUserCard /> : <RightRoleCard />}
-        </Box>
-      </Box> */}
 
     </>
   )

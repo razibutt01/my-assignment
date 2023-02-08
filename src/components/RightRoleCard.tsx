@@ -65,8 +65,7 @@ export default function RightRoleCard() {
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
-    console.log(selectedAssignUser)
-    console.log(selectedUnassignUser)
+
 
     return (
         <Box component={Paper} className={classes.head}>
@@ -82,9 +81,6 @@ export default function RightRoleCard() {
 
                 </Tabs>
             </Box>
-
-
-
 
 
             {selectedAssignUser.firstName != "" ?
@@ -107,9 +103,6 @@ export default function RightRoleCard() {
                 : <TabPanel value={value} index={1}>
                     Select a Role
                 </TabPanel>}
-            {/* <TabPanel value={value} index={1}>
-                Item Two
-            </TabPanel> */}
 
         </Box>
     );

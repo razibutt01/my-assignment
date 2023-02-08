@@ -1,12 +1,13 @@
 import React from 'react'
-import { useRolesContext } from '@/hooks/useRolesContext';
-import useRole from '@/hooks/useRole';
 import { DataGrid, GridColDef, GridEditCellProps, GridRowsProp } from '@mui/x-data-grid';
 import { Box, Paper } from '@material-ui/core';
 import { Button, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import useRole from '@/hooks/useRole';
+import { useRolesContext } from '@/hooks/useRolesContext';
 import { RoleDataContext } from '@/context/SelectedRoleContext';
-type Props = {}
+
+
 const useStyles = makeStyles({
     head: {
         height: "100%", width: "100%",
@@ -25,17 +26,9 @@ const useStyles = makeStyles({
             color: "white"
         },
 
-
-
     }
 })
-interface UserData {
-    id: number;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-}
+
 const RoleNameCell = (props: GridEditCellProps) => {
     const { setSelectedUnassignUser, setSelectedAssignUser } = React.useContext(RoleDataContext);
     function handleRowClick(id: number) {
@@ -66,38 +59,18 @@ const RoleNameCell = (props: GridEditCellProps) => {
     }
 
 
-    // async function handleRole() {
-    //    
-    //     } else {
-    //         handleRole()
-
-    //     }
-
-
-    // }
-
-
-
     return (
         <Button onClick={() => handleRowClick(props.row.id)}>
             {props.row.col1}
         </Button>
     );
 };
-const LeftCard = (props: Props) => {
+
+const LeftCard = () => {
     const { state, dispatch } = useRolesContext()
     const { data, isPending, error } = useRole()
     React.useEffect(() => {
-        // console.log("hello")
-        // const fetchWorkouts = async () => {
-        //     const response = await setUser()
         dispatch({ type: 'SET_ROLES', payload: data })
-
-        //     if (response) {
-        //         console.log(response)
-        //     }
-        // }
-        // fetchWorkouts()
 
     }, [data, dispatch])
     const columns: GridColDef[] = [
@@ -123,8 +96,6 @@ const LeftCard = (props: Props) => {
                 </Box>
             </Box>
 
-
-
         )
     }
     if (error) {
@@ -140,8 +111,6 @@ const LeftCard = (props: Props) => {
                     <Typography variant="h5" style={{ fontWeight: 700 }}>{error}</Typography>
                 </Box>
             </Box>
-
-
 
         )
     }
