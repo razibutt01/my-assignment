@@ -99,7 +99,6 @@ const RoleForm = () => {
         try {
             const json = await apiFetch("http://localhost:8000/roles", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
             });
             setPending(false);

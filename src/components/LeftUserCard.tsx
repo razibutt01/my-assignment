@@ -4,6 +4,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { Box, Paper } from '@material-ui/core';
 import { Typography, Button, IconButton } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import LazyLoad from './LazyLoad';
 import useUser from '@/hooks/useUser';
 import { useUsersContext } from '@/hooks/useUsersContext';
 import { UserDataContext } from '../context/SelectedUserContext';
@@ -42,9 +43,6 @@ const UserNameCell = (props: GridEditCellProps) => {
         try {
             const data = await apiFetch("http://localhost:8000/users/" + id, {
                 method: "GET",
-                headers: {
-                    'Accept': 'application/json',
-                },
             });
             setSelectedUser(data);
         } catch (error) {
@@ -99,41 +97,14 @@ const LeftUserCard = () => {
     const classes = useStyles()
     if (isPending) {
         return (
-            <Box component={Paper} className={classes.head}>
-                <Box className={classes.heading}>
-                    <Typography variant="h4" align='justify' style={{ fontWeight: 700, }}>
-                        Manage Users
-                    </Typography>
-                </Box>
-                <Box style={{ margin: "100px auto" }}>
-
-                    <Typography variant="h5" style={{ fontWeight: 700 }}>Loading....</Typography>
-                </Box>
-            </Box>
-
-
-
+            <LazyLoad state={"Loading...."} />
         )
     }
     if (error) {
         return (
-            <Box component={Paper} className={classes.head}>
-                <Box className={classes.heading}>
-                    <Typography variant="h4" align='justify' style={{ fontWeight: 700, }}>
-                        Manage Users
-                    </Typography>
-                </Box>
-                <Box style={{ margin: "100px auto" }}>
-
-                    <Typography variant="h5" style={{ fontWeight: 700 }}>{error}</Typography>
-                </Box>
-            </Box>
-
-
-
+            <LazyLoad state={error} />
         )
     }
-
 
     return (
         <Box component={Paper} className={classes.head}>

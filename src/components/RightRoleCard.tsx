@@ -51,7 +51,7 @@ function TabPanel(props: TabPanelProps) {
     );
 }
 
-function a11yProps(index: number) {
+function styleProps(index: number) {
     return {
         id: `simple-tab-${index}`,
         'aria-controls': `simple-tabpanel-${index}`,
@@ -76,8 +76,8 @@ export default function RightRoleCard() {
             </Box>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" >
-                    <Tab label="Assigned" {...a11yProps(0)} style={{ width: "50%" }} />
-                    <Tab label="Unassigned" {...a11yProps(1)} style={{ width: "50%" }} />
+                    <Tab label="Assigned" {...styleProps(0)} style={{ width: "50%" }} />
+                    <Tab label="Unassigned" {...styleProps(1)} style={{ width: "50%" }} />
 
                 </Tabs>
             </Box>

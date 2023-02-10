@@ -116,9 +116,6 @@ const Create = () => {
         try {
             await apiFetch(`http://localhost:8000/users/` + id, {
                 method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
                 body: JSON.stringify(userData),
             });
 
@@ -142,7 +139,6 @@ const Create = () => {
         try {
             const jsonData = await apiFetch("http://localhost:8000/users", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
             });
 

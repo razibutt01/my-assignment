@@ -3,6 +3,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { Box, Paper } from '@material-ui/core';
 import { Button, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import LazyLoad from './LazyLoad';
 import useRole from '@/hooks/useRole';
 import { useRolesContext } from '@/hooks/useRolesContext';
 import { RoleDataContext } from '@/context/SelectedRoleContext';
@@ -39,25 +40,16 @@ const RoleNameCell = (props: GridEditCellProps) => {
             setPending(true);
             const data = await apiFetch("http://localhost:8000/roles_users", {
                 method: "GET",
-                headers: {
-                    'Accept': 'application/json',
-                },
             });
             const filteredData = data.filter((d: { id: number, roleId: number, userId: number }) => d.roleId == id)
 
             const assignData = await apiFetch(" http://localhost:8000/users/" + filteredData[0].userId, {
                 method: "GET",
-                headers: {
-                    'Accept': 'application/json',
-                },
             });
             setSelectedAssignUser(assignData);
 
             const unassignData = await apiFetch(" http://localhost:8000/users", {
                 method: "GET",
-                headers: {
-                    'Accept': 'application/json',
-                },
             });
             setSelectedUnassignUser(() => unassignData.filter((d: { id: number, roleId: number, userId: number }) => d.id != filteredData[0].userId));
             setPending(false);
@@ -66,8 +58,6 @@ const RoleNameCell = (props: GridEditCellProps) => {
             setPending(false);
         }
     }
-
-
 
     return (
         <Button onClick={() => handleRowClick(props.row.id)}>
@@ -94,34 +84,12 @@ const LeftCard = () => {
     const classes = useStyles()
     if (isPending) {
         return (
-            <Box component={Paper} className={classes.head}>
-                <Box className={classes.heading}>
-                    <Typography variant="h4" align='justify' style={{ fontWeight: 700, }}>
-                        Manage Roles
-                    </Typography>
-                </Box>
-                <Box style={{ margin: "100px auto" }}>
-
-                    <Typography variant="h5" style={{ fontWeight: 700 }}>Loading....</Typography>
-                </Box>
-            </Box>
-
+            <LazyLoad state={"Loading...."} />
         )
     }
     if (error) {
         return (
-            <Box component={Paper} className={classes.head}>
-                <Box className={classes.heading}>
-                    <Typography variant="h4" align='justify' style={{ fontWeight: 700, }}>
-                        Manage Roles
-                    </Typography>
-                </Box>
-                <Box style={{ margin: "100px auto" }}>
-
-                    <Typography variant="h5" style={{ fontWeight: 700 }}>{error}</Typography>
-                </Box>
-            </Box>
-
+            <LazyLoad state={error} />
         )
     }
     return (
