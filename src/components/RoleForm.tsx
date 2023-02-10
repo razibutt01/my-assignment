@@ -8,6 +8,7 @@ import { makeStyles } from "@material-ui/core";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRolesContext } from '@/hooks/useRolesContext';
+import { apiFetch } from "./apiFetch";
 
 
 type RoleType = {
@@ -93,23 +94,20 @@ const RoleForm = () => {
         return createRole(data);
     }
 
-    const createRole = (data: RoleType) => {
+    const createRole = async (data: RoleType) => {
         setPending(true);
-        fetch("http://localhost:8000/roles", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
-        })
-            .then((res) => {
-
-                setPending(false);
-                return res.json();
-            })
-
-            .then((data) => {
-                dispatch({ type: 'CREATE_ROLES', payload: data })
-
+        try {
+            const json = await apiFetch("http://localhost:8000/roles", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
             });
+            setPending(false);
+            dispatch({ type: 'CREATE_ROLES', payload: json });
+        } catch (error) {
+            setPending(false);
+            console.error(error);
+        }
     };
 
     return (

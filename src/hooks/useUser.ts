@@ -1,4 +1,5 @@
 import React from 'react';
+import { apiFetch } from '@/components/apiFetch';
 
 type UserType = {
     id: number,
@@ -14,33 +15,27 @@ const useUser = () => {
     const url = "http://localhost:8000/users"
     React.useEffect(() => {
         const abortCont = new AbortController();
-        setTimeout(() => {
-            fetch(url, { signal: abortCont.signal })
-                .then(res => {
-                    if (!res.ok) { // error coming back from server
-                        throw Error('could not fetch the data for that resource');
-                    }
-                    return res.json();
-                })
-                .then(data => {
+
+        const fetchData = async () => {
+            try {
+                const data = await apiFetch(url, { signal: abortCont.signal })
+                setIsPending(false);
+                setData(data);
+                setError(null);
+            } catch (err: any) {
+                if (err.name === 'AbortError') {
+                    // do nothing, the fetch was aborted
+                } else {
                     setIsPending(false);
-                    setData(data);
-                    setError(null);
-                })
-                .catch(err => {
-                    if (err.name === 'AbortError') {
+                    setError(err.message);
+                }
+            }
+        };
 
-                    } else {
-                        // auto catches network / connection error
-                        setIsPending(false);
-                        setError(err.message);
-                    }
-                })
-        }, 1000);
+        setTimeout(fetchData, 1000);
 
-        // abort the fetch
         return () => abortCont.abort();
-    }, [url])
+    }, [url]);
 
     return { data, isPending, error };
 }

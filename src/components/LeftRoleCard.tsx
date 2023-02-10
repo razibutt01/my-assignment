@@ -1,11 +1,13 @@
 import React from 'react'
-import { DataGrid, GridColDef, GridEditCellProps, GridRowsProp } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import { Box, Paper } from '@material-ui/core';
 import { Button, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import useRole from '@/hooks/useRole';
 import { useRolesContext } from '@/hooks/useRolesContext';
 import { RoleDataContext } from '@/context/SelectedRoleContext';
+import { apiFetch } from './apiFetch';
+import type { GridColDef, GridEditCellProps, GridRowsProp } from '@mui/x-data-grid';
 
 
 const useStyles = makeStyles({
@@ -31,32 +33,40 @@ const useStyles = makeStyles({
 
 const RoleNameCell = (props: GridEditCellProps) => {
     const { setSelectedUnassignUser, setSelectedAssignUser } = React.useContext(RoleDataContext);
-    function handleRowClick(id: number) {
-        fetch("http://localhost:8000/roles_users", {
-            method: "GET",
-            headers: {
-                'Accept': 'application/json',
-            },
-        }).then(res => res.json())
-            .then((data) => {
+    const [isPending, setPending] = React.useState(true)
+    async function handleRowClick(id: number) {
+        try {
+            setPending(true);
+            const data = await apiFetch("http://localhost:8000/roles_users", {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                },
+            });
+            const filteredData = data.filter((d: { id: number, roleId: number, userId: number }) => d.roleId == id)
 
-                const filteredData = data.filter((d: { id: number, roleId: number, userId: number }) => d.roleId == id)
-                fetch(" http://localhost:8000/users/" + filteredData[0].userId, {
-                    method: "GET",
-                    headers: {
-                        'Accept': 'application/json',
-                    },
-                }).then(res => res.json()).then((data) => setSelectedAssignUser(data))
-                fetch(" http://localhost:8000/users", {
-                    method: "GET",
-                    headers: {
-                        'Accept': 'application/json',
-                    },
-                }).then(res => res.json()).then((data) => setSelectedUnassignUser(() => data.filter((d: { id: number, roleId: number, userId: number }) => d.id != filteredData[0].userId)))
+            const assignData = await apiFetch(" http://localhost:8000/users/" + filteredData[0].userId, {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                },
+            });
+            setSelectedAssignUser(assignData);
 
-            }
-            );
+            const unassignData = await apiFetch(" http://localhost:8000/users", {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                },
+            });
+            setSelectedUnassignUser(() => unassignData.filter((d: { id: number, roleId: number, userId: number }) => d.id != filteredData[0].userId));
+            setPending(false);
+        } catch (err) {
+            console.error(err);
+            setPending(false);
+        }
     }
+
 
 
     return (

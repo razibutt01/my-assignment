@@ -1,12 +1,14 @@
 import React from 'react'
 import DeleteIcon from '@material-ui/icons/Delete';
-import { DataGrid, GridRowsProp, GridEditCellProps } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import { Box, Paper } from '@material-ui/core';
 import { Typography, Button, IconButton } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import useUser from '@/hooks/useUser';
 import { useUsersContext } from '@/hooks/useUsersContext';
 import { UserDataContext } from '../context/SelectedUserContext';
+import { apiFetch } from './apiFetch';
+import type { GridEditCellProps, GridRowsProp } from '@mui/x-data-grid';
 
 
 
@@ -36,14 +38,18 @@ const useStyles = makeStyles({
 const UserNameCell = (props: GridEditCellProps) => {
     const { setSelectedUser } = React.useContext(UserDataContext);
 
-    function handleRowClick(id: number) {
-        fetch("http://localhost:8000/users/" + id, {
-            method: "GET",
-            headers: {
-                'Accept': 'application/json',
-            },
-        }).then(res => res.json())
-            .then(data => setSelectedUser(data))
+    async function handleRowClick(id: number) {
+        try {
+            const data = await apiFetch("http://localhost:8000/users/" + id, {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                },
+            });
+            setSelectedUser(data);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     return (
@@ -56,16 +62,16 @@ const UserNameCell = (props: GridEditCellProps) => {
 const LeftUserCard = () => {
     const { state, dispatch } = useUsersContext()
     const { data, isPending, error } = useUser()
-    function handleDelete(id: any) {
-        fetch("http://localhost:8000/users" + "/" + id, {
-            method: 'DELETE'
-        }).then(() => {
+    async function handleDelete(id: any) {
+        try {
+            await apiFetch("http://localhost:8000/users" + "/" + id, {
+                method: 'DELETE'
+            });
             console.log('removed');
-        }).catch(err => {
-            console.error(err)
-        });
-        dispatch({ type: 'DELETE_USERS', payload: { id: id } })
-
+            dispatch({ type: 'DELETE_USERS', payload: { id: id } });
+        } catch (error) {
+            console.error(error);
+        }
     }
     React.useEffect(() => {
         dispatch({ type: 'SET_USERS', payload: data })

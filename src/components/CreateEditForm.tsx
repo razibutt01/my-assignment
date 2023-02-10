@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useUsersContext } from '@/hooks/useUsersContext';
 import { UserDataContext } from '../context/SelectedUserContext';
+import { apiFetch } from "./apiFetch";
 
 
 type UserType = {
@@ -100,74 +101,73 @@ const Create = () => {
     function onSubmit(data: UserType) {
         return isAddMode ? createUser(data) : updateUser(selectedUser.id, data);
     }
-    const update = () => {
-        fetch("  http://localhost:8000/users").then((result) => {
-            result.json().then((resp) => {
-                dispatch({ type: 'SET_USERS', payload: resp })
-            });
-        });
+    const update = async () => {
+        try {
+            const resp = await apiFetch("http://localhost:8000/users");
+            dispatch({ type: 'SET_USERS', payload: resp });
+        } catch (err) {
+            console.error(err);
+        }
     };
-    const updateUser = (
+    const updateUser = async (
         id: number | string,
         userData: UserType
     ) => {
-        fetch(`http://localhost:8000/users/` + id, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(userData),
-        })
-            .then((res) => {
-                return res.json();
-            })
-            .then(() => {
-                dispatch({
-                    type: "UPDATE_USER",
-                    payload: {
-                        id,
-                        userData
-                    }
-                });
-
-                update();
+        try {
+            await apiFetch(`http://localhost:8000/users/` + id, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(userData),
             });
+
+            dispatch({
+                type: "UPDATE_USER",
+                payload: {
+                    id,
+                    userData,
+                },
+            });
+
+            update();
+        } catch (error) {
+            console.error(error);
+        }
     };
 
-    const createUser = (data: UserType) => {
+
+    const createUser = async (data: UserType) => {
         setPending(true);
-        fetch("http://localhost:8000/users", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
-        })
-            .then((res) => {
-
-                setPending(false);
-                return res.json();
-            })
-
-            .then((data) => {
-                dispatch({ type: 'CREATE_USERS', payload: data })
-
-
+        try {
+            const jsonData = await apiFetch("http://localhost:8000/users", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
             });
-    };
-    React.useEffect(() => {
-        if (!isAddMode) {
 
-            fetch(`http://localhost:8000/users/` + selectedUser.id)
-                .then((res) => {
-                    return res.json();
-                })
-                .then((data) => {
+            setPending(false);
+            dispatch({ type: "CREATE_USERS", payload: jsonData });
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    React.useEffect(() => {
+        async function fetchSelectedUserData() {
+            if (!isAddMode) {
+                try {
+                    const data = await apiFetch("http://localhost:8000/users/" + selectedUser.id);
                     const fields: Array<
                         "firstName" | "lastName" | "email" | "phone"
                     > = ["firstName", "lastName", "email", "phone"];
                     fields.forEach((field) => setValue(field, data[field]));
-
-                });
+                } catch (error) {
+                    console.error(error);
+                }
+            }
         }
+        fetchSelectedUserData();
     }, [isAddMode, selectedUser.id, setValue]);
 
     return (
