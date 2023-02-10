@@ -1,0 +1,62 @@
+{
+  "roles": [
+    {
+      "id": 1,
+      "title": "admin",
+      "description": "Admin role",
+      "active": "no"
+    },
+    {
+      "id": 2,
+      "title": "user",
+      "description": "User role",
+      "active": "yes"
+    },
+    {
+      "title": "Administrator",
+      "description": "blah",
+      "active": "no",
+      "id": 4
+    }
+  ],
+  "users": [
+    {
+      "firstName": "Ali ",
+      "lastName": "Hassan",
+      "email": "user1@example.com",
+      "phone": 123456,
+      "id": 1
+    },
+    {
+      "firstName": "Abdullah",
+      "lastName": "Butt",
+      "email": "user2@example.com",
+      "phone": 234567,
+      "id": 3
+    },
+    {
+      "phone": 3114587344,
+      "email": "buttrazi84@gmail.com",
+      "lastName": "Butt",
+      "firstName": "Razi",
+      "id": 4
+    }
+  ],
+  "roles_users": [
+    {
+      "id": 1,
+      "roleId": 1,
+      "userId": 1
+    },
+    {
+      "id": 2,
+      "roleId": 2,
+      "userId": 4
+    },
+    {
+      "id": 3,
+      "roleId": 4,
+      "userId": 3
+    }
+  ]
+}
